@@ -2,12 +2,12 @@
     "report_data_sources": {
         "Bowtie 2 / HiSAT2": {
             "all_sections": {
-                "file": "/home/dajana/Projects/GATK/Rezultat/Bowtie/file.log"
+                "file": "/home/dajana/Gatk/Rezultat/Bowtie/file.log"
             }
         },
         "fastp": {
             "all_sections": {
-                "test_new_dup_dna_1": "/home/dajana/Projects/GATK/Rezultat/Fastp/fastp.json"
+                "test_new_dup_dna_1": "/home/dajana/Gatk/Rezultat/Fastp/fastp.json"
             }
         }
     },
@@ -206,7 +206,7 @@
             }
         }
     ],
-    "report_multiqc_command": "/home/dajana/.local/bin/multiqc .",
+    "report_multiqc_command": "/home/dajana/.local/bin/multiqc Gatk/Rezultat -o Gatk/Rezultat",
     "report_plot_data": {
         "bowtie2_pe_plot": {
             "plot_type": "bar_graph",
@@ -4591,7 +4591,7 @@
                 },
                 "insert_size": {
                     "peak": 0,
-                    "unknown": 1000,
+                    "unknown": 265,
                     "histogram": [
                         0,
                         0,
@@ -12875,7 +12875,7 @@
                     },
                     "overrepresented_sequences": {}
                 },
-                "command": "fastp --html Projects/GATK/Rezultat/Fastp/fastp.html --json Projects/GATK/Rezultat/Fastp/fastp.json -i Projects/GATK/Reads/test_new_dup_dna_1.fq -I Projects/GATK/Reads/test_new_dup_dna_2.fq -o Projects/GATK/Rezultat/Fastp/test_new_dup_dna_trim1.fq -O Projects/GATK/Rezultat/Fastp/test_new_dup_dna_trim2.fq "
+                "command": "fastp --html Gatk/Rezultat/Fastp/fastp.html --json Gatk/Rezultat/Fastp/fastp.json -i Gatk/Reads/test_new_dup_dna_1.fq -I Gatk/Reads/test_new_dup_dna_2.fq -o Gatk/Rezultat/Fastp/test_new_dup_dna_trim1.fq -O Gatk/Rezultat/Fastp/test_new_dup_dna_trim2.fq "
             }
         },
         "multiqc_general_stats": {
@@ -12893,12 +12893,12 @@
         }
     },
     "config_analysis_dir_abs": [
-        "/home/dajana/Projects/GATK/Rezultat"
+        "/home/dajana/Gatk/Rezultat"
     ],
     "config_analysis_dir": [
-        "."
+        "Gatk/Rezultat"
     ],
-    "config_creation_date": "2020-12-16, 10:24",
+    "config_creation_date": "2020-12-16, 18:29",
     "config_git_hash": null,
     "config_intro_text": null,
     "config_report_comment": null,

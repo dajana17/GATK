@@ -16,11 +16,11 @@ fi
 
 sleep 1
 
-OUT1="$PUT/FASTP/${FILE}_trim1.fq"
-OUT2="$PUT/FASTP/${FILE}_trim2.fq"
+OUT1="$PUT/Fastp/${FILE}_trim1.fq"
+OUT2="$PUT/Fastp/${FILE}_trim2.fq"
 echo $OUT1
 
-fastp  --html "$PUT/FASTP/fastp.html" --json "$PUT/FASTP/fastp.json" -i $FILE1 -I $FILE2 -o $OUT1 -O $OUT2
+fastp  --html "$PUT/Fastp/fastp.html" --json "$PUT/Fastp/fastp.json" -i $FILE1 -I $FILE2 -o $OUT1 -O $OUT2    
 
 
 if ! [ -e "$INDEX" ]

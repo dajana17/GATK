@@ -1,2 +1,2 @@
 Sample	command
-test_new_dup_dna_1	fastp --html TTP/REZULTAT/FASTP/fastp.html --json TTP/REZULTAT/FASTP/fastp.json -i TTP/test_new_dup_dna_1.fq -I TTP/test_new_dup_dna_2.fq -o TTP/REZULTAT/FASTP/test_new_dup_dna_trim1.fq -O TTP/REZULTAT/FASTP/test_new_dup_dna_trim2.fq 
+test_new_dup_dna_1	fastp --html Projects/GATK/Rezultat/Fastp/fastp.html --json Projects/GATK/Rezultat/Fastp/fastp.json -i Projects/GATK/Reads/test_new_dup_dna_1.fq -I Projects/GATK/Reads/test_new_dup_dna_2.fq -o Projects/GATK/Rezultat/Fastp/test_new_dup_dna_trim1.fq -O Projects/GATK/Rezultat/Fastp/test_new_dup_dna_trim2.fq 

@@ -2,6 +2,8 @@
 
 # ./Gatk.sh
 
+# gatk.jar and picard.jar must be in a folder where script is
+
 FASTQ_1="Reads/test_new_dup_dna_1.fq"
 FASTQ_2="Reads/test_new_dup_dna_2.fq"
 RES_DIR="results"
@@ -10,7 +12,7 @@ FASTA_FILE="Ref/test.fa"
 VARIANTS="Reads/test.dbsnp.vcf.gz"
 
 
-
+mkdir $RES_DIR
 if [ ${FASTQ_1%_*} == ${FASTQ_2%_*} ]
 then
    FILE="$(basename ${FASTQ_1%_*})"

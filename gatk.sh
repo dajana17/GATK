@@ -2,34 +2,32 @@
 
 # ./Gatk.sh
 
-FILE1="Reads/test_new_dup_dna_1.fq"
-FILE2="Reads/test_new_dup_dna_2.fq"
-PUT="Rezultat"
+FASTQ_1="Reads/test_new_dup_dna_1.fq"
+FASTQ_2="Reads/test_new_dup_dna_2.fq"
+RES_DIR="results"
 INDEX="Ref/Index"
 FASTA_FILE="Ref/test.fa"
 VARIANTS="Reads/test.dbsnp.vcf.gz"
-# BAM_FILE= "Rezultat/Bowtie/test_new_dup_dna.bam"
-# SORT_BAM_FILE= "Rezultat/Bowtie/test_new_dup_dna_sort.bam"
 
 
-if [ ${FILE1%_*} == ${FILE2%_*} ]
+
+if [ ${FASTQ_1%_*} == ${FASTQ_2%_*} ]
 then
-   FILE="$(basename ${FILE1%_*})"
+   FILE="$(basename ${FASTQ_1%_*})"
+   echo "names of files are the same, continue"
    echo $FILE
 else
-    echo -e "\n Imena fajlova nisu konzistentna.\n"
+    echo -e "\n File names are not good, exiting \n"
     exit
 fi
 
 sleep 1
 
-OUT1="$PUT/Fastp/${FILE}_trim1.fq"
-OUT2="$PUT/Fastp/${FILE}_trim2.fq"
+TRIMM_FASTA_1="$RES_DIR/fastp/${FILE}_trim1.fq"
+TRIMM_FASTA_2="$RES_DIR/fastp/${FILE}_trim2.fq"
 
-mkdir $PUT/Fastp
-./fastp  --html "$PUT/Fastp/fastp.html" --json "$PUT/Fastp/fastp.json" -i $FILE1 -I $FILE2 -o $OUT1 -O $OUT2
-
-sleep 2
+mkdir $RES_DIR/fastp
+./fastp  --html "$RES_DIR/fastp/fastp.html" --json "$RES_DIR/fastp/fastp.json" -i $FASTQ_1 -I $FASTQ_2 -o $TRIMM_FASTA_1 -O $TRIMM_FASTA_2
 
 if ! [ -e "$INDEX" ]
 then
@@ -44,50 +42,58 @@ fi
 
 sleep 2
 
-if ! [ -e "$PUT/Bowtie/$FILE.bam" ]
+if ! [ -e "$RES_DIR/bowtie2/$FILE.bam" ]
 then
     echo -e "\n Sada cemo napraviti BAM fajl.\n"
     sleep 2
-    mkdir $PUT/Bowtie
-    (bowtie2 -x $INDEX/moj_index --rg-id test --rg SM:test --rg LB:GRC --rg PL:ILLUMINA --rg DS:HiSeq2000 -1 $OUT1 -2 $OUT2 | samtools view -bS - > "Rezultat/Bowtie/$FILE.bam") 2>"Rezultat/Bowtie/file.log"
+    mkdir $RES_DIR/bowtie2
+    (bowtie2 -x $INDEX/moj_index --rg-id test \
+                                 --rg SM:test \
+                                 --rg LB:GRC \
+                                 --rg PL:ILLUMINA \
+                                 --rg DS:HiSeq2000 \
+                                 -1 $TRIMM_FASTA_1 -2 $TRIMM_FASTA_2 | samtools view -bS - > "results/bowtie2/$FILE.bam") 2> "results/bowtie2/file.log"
 
 
 else
-    echo -e "\n $FILE.bam fajl vec postoji\n"
+    echo -e "\n $FILE.bam file already exist\n"
 fi
 
 sleep 2
 
 
-multiqc Rezultat -o Rezultat
+multiqc results -o results
 
 #
-# echo index fasta file
-# samtools faidx $FASTA_FILE
-# echo prepare FASTA genome sequence dictionary with Picard
-# java -jar picard.jar CreateSequenceDictionary \
-#       -R $FASTA_FILE
-#
+echo index fasta file
+samtools faidx $FASTA_FILE
+echo prepare FASTA genome sequence dictionary with Picard
+java -jar picard.jar CreateSequenceDictionary \
+      -R $FASTA_FILE
+
+
 echo sorting bam file
-samtools sort "Rezultat/Bowtie/$FILE.bam" > "Rezultat/Bowtie/$FILE.sort.bam"
+samtools sort "results/bowtie2/$FILE.bam" > "results/bowtie2/$FILE.sort.bam"
+
+
 echo marking of duplictes
-mkdir $PUT/MarkDuplicates
+mkdir $RES_DIR/MarkDuplicates
 java -jar picard.jar MarkDuplicates \
-       -I Rezultat/Bowtie/$FILE.sort.bam \
-       -O Rezultat/MarkDuplicates/$FILE_marked_duplicates.bam \
-       -M Rezultat/MarkDuplicates/$FILE_marked_dup_metrics.txt
+       -I results/bowtie2/$FILE.sort.bam \
+       -O results/MarkDuplicates/$FILE_marked_duplicates.bam \
+       -M results/MarkDuplicates/$FILE_marked_dup_metrics.txt
 
 #
-mkdir $PUT/BaseRecalibrator
+mkdir $RES_DIR/BaseRecalibrator
 echo base quality score recalibration
 java -jar gatk.jar BaseRecalibrator \
-      -I Rezultat/Bowtie/$FILE.sort.bam  \
+      -I results/bowtie2/$FILE.sort.bam  \
       -R $FASTA_FILE \
       --known-sites $VARIANTS \
-      -O Rezultat/BaseRecalibrator/recal_data.table
-# #
-# # java -jar gatk.jar ApplyBQSR \
-# #       -R $FASTA_FILE \
-# #       -I Rezultat/Bowtie/$FILE.bam \
-# #       --bqsr-recal-file Rezultat/BaseRecalibrator/recal_data.table \
-# #       -O Rezultat/BaseRecalibrator/output.bam
+      -O results/BaseRecalibrator/$FILE_recal_data.table
+
+java -jar gatk.jar ApplyBQSR \
+      -R $FASTA_FILE \
+      -I results/bowtie2/$FILE.sort.bam \
+      --bqsr-recal-file results/BaseRecalibrator/$FILE_recal_data.table \
+      -O results/BaseRecalibrator/output.bam

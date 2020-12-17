@@ -1,3 +1,0 @@
-Module	Section	Sample Name	Source
-Bowtie 2 / HiSAT2	all_sections	file	/home/dajana/Gatk/Rezultat/Bowtie/file.log
-fastp	all_sections	test_new_dup_dna_1	/home/dajana/Gatk/Rezultat/Fastp/fastp.json

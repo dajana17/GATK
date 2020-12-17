@@ -1,2 +1,0 @@
-Sample	command
-test_new_dup_dna_1	fastp --html Gatk/Rezultat/Fastp/fastp.html --json Gatk/Rezultat/Fastp/fastp.json -i Gatk/Reads/test_new_dup_dna_1.fq -I Gatk/Reads/test_new_dup_dna_2.fq -o Gatk/Rezultat/Fastp/test_new_dup_dna_trim1.fq -O Gatk/Rezultat/Fastp/test_new_dup_dna_trim2.fq 

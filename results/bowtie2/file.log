@@ -1,0 +1,5 @@
+stat: Bad file descriptor
+Warning: Could not open read file "results/fastp/test_new_dup_dna_trim1.fq" for reading; skipping...
+Error: No input read files were valid
+(ERR): bowtie2-align exited with value 1
+[main_samview] fail to read the header from "-".

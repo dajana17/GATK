@@ -4,12 +4,22 @@
 
 # files gatk.jar and picard.jar must be places in a folder where script is
 
-FASTQ_1="Reads/test_new_dup_dna_1.fq"
-FASTQ_2="Reads/test_new_dup_dna_2.fq"
+
+
 RES_DIR="results"
 INDEX="Ref/Index"
 FASTA_FILE="Ref/test.fa"
 VARIANTS="Reads/test.dbsnp.vcf.gz"
+
+if [ $# == 2 ] && [ ${1: -3} == ".fq" ]
+then 
+    FASTQ_1=$1
+    FASTQ_2=$2
+else
+    FASTQ_1="Reads/test_new_dup_dna_1.fq"
+    FASTQ_2="Reads/test_new_dup_dna_2.fq"
+fi
+
 
 
 mkdir $RES_DIR
@@ -29,7 +39,7 @@ TRIMM_FASTA_1="$RES_DIR/fastp/${FILE}_trim1.fq"
 TRIMM_FASTA_2="$RES_DIR/fastp/${FILE}_trim2.fq"
 
 mkdir $RES_DIR/fastp
-./fastp  --html "$RES_DIR/fastp/fastp.html" --json "$RES_DIR/fastp/fastp.json" -i $FASTQ_1 -I $FASTQ_2 -o $TRIMM_FASTA_1 -O $TRIMM_FASTA_2
+fastp  --html "$RES_DIR/fastp/fastp.html" --json "$RES_DIR/fastp/fastp.json" -i $FASTQ_1 -I $FASTQ_2 -o $TRIMM_FASTA_1 -O $TRIMM_FASTA_2
 
 if ! [ -e "$INDEX" ]
 then

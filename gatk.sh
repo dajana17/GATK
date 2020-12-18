@@ -2,7 +2,7 @@
 
 # ./Gatk.sh
 
-# gatk.jar and picard.jar must be in a folder where script is
+# files gatk.jar and picard.jar must be places in a folder where script is
 
 FASTQ_1="Reads/test_new_dup_dna_1.fq"
 FASTQ_2="Reads/test_new_dup_dna_2.fq"
@@ -64,8 +64,8 @@ fi
 sleep 2
 
 
-multiqc results -o results
-
+# multiqc results -o results
+#
 #
 echo index fasta file
 samtools faidx $FASTA_FILE
@@ -76,16 +76,16 @@ java -jar picard.jar CreateSequenceDictionary \
 
 echo sorting bam file
 samtools sort "results/bowtie2/$FILE.bam" > "results/bowtie2/$FILE.sort.bam"
-
-
+#
+#
 echo marking of duplictes
 mkdir $RES_DIR/MarkDuplicates
 java -jar picard.jar MarkDuplicates \
        -I results/bowtie2/$FILE.sort.bam \
-       -O results/MarkDuplicates/$FILE_marked_duplicates.bam \
-       -M results/MarkDuplicates/$FILE_marked_dup_metrics.txt
+       -O results/MarkDuplicates/marked_duplicates.bam \
+       -M results/MarkDuplicates/marked_dup_metrics.txt
 
-#
+# #
 mkdir $RES_DIR/BaseRecalibrator
 echo base quality score recalibration
 java -jar gatk.jar BaseRecalibrator \
@@ -99,3 +99,10 @@ java -jar gatk.jar ApplyBQSR \
       -I results/bowtie2/$FILE.sort.bam \
       --bqsr-recal-file results/BaseRecalibrator/$FILE_recal_data.table \
       -O results/BaseRecalibrator/output.bam
+
+
+echo variant calling using GATK
+mkdir $RES_DIR/HaplotypeCaller
+java -jar gatk.jar  HaplotypeCaller \
+     -R $FASTA_FILE -I results/bowtie2/$FILE.sort.bam \
+     -O results/HaplotypeCaller/output.gatk.vcf.gz

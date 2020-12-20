@@ -12,7 +12,7 @@ FASTA_FILE="Ref/test.fa"
 VARIANTS="Reads/test.dbsnp.vcf.gz"
 
 if [ $# == 2 ] && [ ${1: -3} == ".fq" ]
-then 
+then
     FASTQ_1=$1
     FASTQ_2=$2
 else
@@ -39,7 +39,7 @@ TRIMM_FASTA_1="$RES_DIR/fastp/${FILE}_trim1.fq"
 TRIMM_FASTA_2="$RES_DIR/fastp/${FILE}_trim2.fq"
 
 mkdir $RES_DIR/fastp
-fastp  --html "$RES_DIR/fastp/fastp.html" --json "$RES_DIR/fastp/fastp.json" -i $FASTQ_1 -I $FASTQ_2 -o $TRIMM_FASTA_1 -O $TRIMM_FASTA_2
+./fastp  --html "$RES_DIR/fastp/fastp.html" --json "$RES_DIR/fastp/fastp.json" -i $FASTQ_1 -I $FASTQ_2 -o $TRIMM_FASTA_1 -O $TRIMM_FASTA_2
 
 if ! [ -e "$INDEX" ]
 then
@@ -74,9 +74,6 @@ fi
 sleep 2
 
 
-# multiqc results -o results
-#
-#
 echo index fasta file
 samtools faidx $FASTA_FILE
 echo prepare FASTA genome sequence dictionary with Picard
@@ -110,9 +107,15 @@ java -jar gatk.jar ApplyBQSR \
       --bqsr-recal-file results/BaseRecalibrator/$FILE_recal_data.table \
       -O results/BaseRecalibrator/output.bam
 
+echo make index for bam file
+samtools index results/bowtie2/$FILE.sort.bam
 
 echo variant calling using GATK
 mkdir $RES_DIR/HaplotypeCaller
 java -jar gatk.jar  HaplotypeCaller \
      -R $FASTA_FILE -I results/bowtie2/$FILE.sort.bam \
      -O results/HaplotypeCaller/output.gatk.vcf.gz
+
+echo perform mutliqc statistics
+
+multiqc results -o results

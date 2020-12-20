@@ -2,10 +2,7 @@
 
 # ./Gatk.sh
 
-# files gatk.jar and picard.jar must be places in a folder where script is
-
-
-
+# files gatk.jar and picard.jar must be places in a folder where script i
 RES_DIR="results"
 INDEX="Ref/Index"
 FASTA_FILE="Ref/test.fa"
@@ -43,20 +40,20 @@ mkdir $RES_DIR/fastp
 
 if ! [ -e "$INDEX" ]
 then
-    echo -e "\n Sada cemo napraviti index fajl.\n"
+    echo -e "\n creating index file \n"
     sleep 2
     mkdir $INDEX
     bowtie2-build Ref/test.fa $INDEX/moj_index
 
 else
-    echo -e "\n Index fajl vec postoji.\n"
+    echo -e "\n index file already exist.\n"
 fi
 
 sleep 2
 
 if ! [ -e "$RES_DIR/bowtie2/$FILE.bam" ]
 then
-    echo -e "\n Sada cemo napraviti BAM fajl.\n"
+    echo -e "\n perform alignment.\n"
     sleep 2
     mkdir $RES_DIR/bowtie2
     (bowtie2 -x $INDEX/moj_index --rg-id test \
@@ -108,12 +105,12 @@ java -jar gatk.jar ApplyBQSR \
       -O results/BaseRecalibrator/output.bam
 
 echo make index for bam file
-samtools index results/bowtie2/$FILE.sort.bam
+samtools index results/BaseRecalibrator/output.bam
 
 echo variant calling using GATK
 mkdir $RES_DIR/HaplotypeCaller
 java -jar gatk.jar  HaplotypeCaller \
-     -R $FASTA_FILE -I results/bowtie2/$FILE.sort.bam \
+     -R $FASTA_FILE -I results/BaseRecalibrator/output.bam \
      -O results/HaplotypeCaller/output.gatk.vcf.gz
 
 echo perform mutliqc statistics
